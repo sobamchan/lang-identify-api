@@ -1,9 +1,13 @@
+import os
+from dotenv import load_dotenv
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel
 from fasttext import load_model
 
+load_dotenv()
+
 app = FastAPI()
-AUTH_KEY = "secret"
+AUTH_KEY = os.getenv("SECRET")
 
 model = load_model("./lid.176.ftz")
 LANGS = ("ja", "en", "es")
