@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
-from fastapi import FastAPI, Header, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI, Body, Header, HTTPException
 from fasttext import load_model
 
 load_dotenv()
@@ -22,14 +21,12 @@ def predict_lang(t: str):
     return LANGS[0]
 
 
-class Req(BaseModel):
-    text: str
-
-
 @app.post("/identify")
-def identify(item: Req, Authorization: str = Header(None)):
+def identify(
+        text: str = Body(..., embed=True), Authorization: str = Header(None)
+        ):
 
-    if AUTH_KEY != Authorization:
+    if Authorization != AUTH_KEY:
         raise HTTPException(status_code=401, detail="wrong authorization key")
 
-    return {"lang": predict_lang(item.text)}
+    return {"lang": predict_lang(text)}
